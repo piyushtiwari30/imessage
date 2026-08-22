@@ -21,7 +21,7 @@ const publicDir =path.join(process.cwd(),"public");
 
 
 app.use(express.json());// this allow as to parse the incomming data ,parse the json data comming form the client side
-app.use(cors({origin:FRONTEND_URL,credentials:TRUE}))//ORIGIN WITH URL WILL MAKE THE PRETICULAR URL TO ACCES THE DATABBASE HERE ITS "FRONTEND_URL"
+app.use(cors({origin:FRONTEND_URL,credentials:true}))//ORIGIN WITH URL WILL MAKE THE PRETICULAR URL TO ACCES THE DATABBASE HERE ITS "FRONTEND_URL"
 //AND credentials will make the client to send the cookies or auth header with the request.
 app.use(clerkMiddleware());
 
@@ -34,7 +34,7 @@ app.get("/health",(req,res)=>{
 
 //if the public directory exists, serve the static file
 //this if for the production build
-if (fs.existSync(publicDir)){
+if (fs.existsSync(publicDir)){
 
     app.use(express.static(publicDir));
     app.get("/{*any}",(req,res,next)=>{
