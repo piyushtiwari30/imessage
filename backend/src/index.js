@@ -8,6 +8,7 @@ import cors from "cors";
 
 import fs from "fs";
 import path from "path"
+import job from "./lib/corn.js";
 
 
 const app=express();
@@ -47,3 +48,7 @@ app.listen(PORT,()=> {
     console.log("server is up and running on port 3000",PORT)
 
 });
+
+if(process.env.NODE_ENV === "production"){
+    job.start();
+}
