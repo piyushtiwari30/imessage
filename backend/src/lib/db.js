@@ -9,7 +9,13 @@ export async function connectDb(){
         }
 
         const conn=await mongoose.connect(mongoUri);
-        console.log("mongoDB has been connected",conn.connection.host);
+
+        console.log(
+            "MongoDB connected:",
+            conn.connection.host,
+            "Database:",
+            conn.connection.db.databaseName
+        );
     } catch (error) {
         console.log("MongoDB connection not being made",error.message);
         process.exit(1)
