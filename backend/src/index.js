@@ -24,7 +24,7 @@ const publicDir =path.join(process.cwd(),"public");
 
 //it is impoertant that we dont parse the webhook in the event data, it should be in the raw formate
 //we dont want to parse the comming data which the clerk send us , we want to keep in the raw fromate.
-app.use("api/webhooks/clerk",express.raw({type:"application/json"}),clerkWebhook)
+app.use("/api/webhooks/clerk",express.raw({type:"application/json"}),clerkWebhook)
 
 app.use(express.json());// this allow as to parse the incomming data ,parse the json data comming form the client side
 app.use(cors({origin:FRONTEND_URL,credentials:true}))//ORIGIN WITH URL WILL MAKE THE PRETICULAR URL TO ACCES THE DATABBASE HERE ITS "FRONTEND_URL"
