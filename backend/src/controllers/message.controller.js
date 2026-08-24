@@ -1,6 +1,7 @@
 import User from "../model/user.model.js"
 import Message from "../model/message.model.js"
 import { hasImageKitConfig, uploadChatMedia } from "../lib/imagekit.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 
 export async function getUsersForSidebar(req,res){
     try {
@@ -93,7 +94,11 @@ export async function sendMessages(req,res) {
 
         await newMessage.save()
 
-        //todo: realtime witn soketio
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        //only send the message in real time if user is online
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("newMessage",newMessage)
+        }
         res.status(201).json(newMessage)
     } catch (error) {
         console.log("Error in sendMessage:",error.message);

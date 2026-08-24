@@ -14,11 +14,12 @@ import clerkWebhook from "./webhooks/clerk.webhook.js"
 
 import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
+import { server } from "./lib/socket.js";
 
 
 
 
-const app=express();
+// const app=express();
 const PORT=process.env.PORT;
 const FRONTEND_URL=process.env.FRONTEND_URL;
 
@@ -53,12 +54,11 @@ if (fs.existsSync(publicDir)){
     });
 }
 
-app.listen(PORT,()=> {
+server.listen(PORT,()=> {
     connectDb();
     console.log("server is up and running on port 3000",PORT)
-
+    if(process.env.NODE_ENV === "production"){
+        job.start();
+}
 });
 
-if(process.env.NODE_ENV === "production"){
-    job.start();
-}
