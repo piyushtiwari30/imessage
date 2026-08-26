@@ -14,7 +14,7 @@ import clerkWebhook from "./webhooks/clerk.webhook.js"
 
 import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
-import { server } from "./lib/socket.js";
+import { app,server } from "./lib/socket.js";
 
 
 
