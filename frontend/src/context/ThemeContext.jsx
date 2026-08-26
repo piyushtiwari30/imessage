@@ -28,7 +28,9 @@ function readStoredThemePreset() {
 }
 
 export function ThemeProvider({ children }) {
-  const [theme, setThemeState] = useState(() => readStoredTheme() ?? getSystemTheme());
+  const [theme, setThemeState] = useState(
+    () => readStoredTheme() ?? getSystemTheme()
+);
   const [themePreset, setThemePresetState] = useState(readStoredThemePreset);
 
   // this applies light/dark mode
