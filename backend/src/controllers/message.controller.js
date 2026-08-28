@@ -6,7 +6,7 @@ import { getReceiverSocketId, io } from "../lib/socket.js";
 export async function getUsersForSidebar(req,res){
     try {
         const loggedInUserId=req.user._id;
-        const filteredUsers=await User.find({_id:{$ne: loggedInUserId}}).select("_clerkId");
+        const filteredUsers=await User.find({_id:{$ne: loggedInUserId}}).select("-clerkId");
 
 
         res.status(200).json(filteredUsers);
@@ -19,7 +19,7 @@ export async function getUsersForSidebar(req,res){
 export async function getConversationsForSidebar(req,res){
     try {
         const loggedInUserId=req.user._id;
-        const consversations =await Message.aggregare([
+        const conversations =await Message.aggregate([
             // 1. Keep only the messages I sent or received.
             { $match: { $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }] } },
             // 2. Collapse them into one row per chat partner, noting our latest message time.
@@ -39,7 +39,7 @@ export async function getConversationsForSidebar(req,res){
             // 6. Hide the private clerkId field from the result.
             { $project: { clerkId: 0 } },
         ]);
-        res.status(200).json(consversations)
+        res.status(200).json(conversations)
 
     } catch (error) {
         console.error("Error in getConverstionsForSidebar:",error.message);
@@ -58,6 +58,7 @@ export async function getMessages(req,res){
                 {senderId:userToChatId , receiverId:myId},
             ]
         }).sort({createdAt:1})
+        res.status(200).json(messages);
     } catch (error) {
         console.log("Error in getMessages:",error.message);
         res.status(500).json({message:"Internal server error in message controller"})
@@ -67,8 +68,11 @@ export async function getMessages(req,res){
 export async function sendMessages(req,res) {
     try {
         const { text }= req.body;
-        const {id: receiverId}=req.params;
-        const senderId =req.user._id;
+        const receiverId = req.params.id;
+        const senderId = req.user._id;
+
+        console.log("receiverId:", receiverId);
+        console.log("senderId:", senderId);
 
 
         let imageUrl;

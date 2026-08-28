@@ -42,7 +42,7 @@ app.get("/health",(req,res)=>{
 });
 
 app.use("/api/auth",authRoutes);
-app.use("/api/message",messageRoutes);
+app.use("/api/messages",messageRoutes);
 
 //if the public directory exists, serve the static file
 //this if for the production build

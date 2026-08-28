@@ -5,7 +5,7 @@ const messageSchema=new mongoose.Schema({
         ref:"User",
         required:true,
     },
-    reciverId:{
+    receiverId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true,
@@ -19,7 +19,7 @@ const messageSchema=new mongoose.Schema({
     video:{
         type:String,
     }
-},{timestamp:true})
+},{timestamps:true})
 
 const Message= mongoose.model("Message",messageSchema);
 export default Message;
