@@ -1,5 +1,6 @@
 import { useWallpaper } from "../context/wallpaper";
 import { useChatStore } from "../store/useChatStore";
+import { useAuthStore } from "../store/useAuthStore";
 import { useSelectedConversation } from "../hooks/useSelectedConversation";
 import { useEffect } from "react";
 import ChatSidebar from "../components/chat/ChatSidebar";
@@ -9,7 +10,7 @@ import { ChatComposer } from "../components/chat/ChatComposer";
 
 function ChatPage() {
   const { frameStyle } = useWallpaper();
-
+  const socket = useAuthStore((state) => state.socket);
   const getConversations = useChatStore((state) => state.getConversations);
   const getMessages = useChatStore((state) => state.getMessages);
   const getUsers = useChatStore((state) => state.getUsers);
@@ -24,14 +25,17 @@ function ChatPage() {
   }, [getConversations, getUsers]);
 
   useEffect(() => {
-    if (!activeConversationId) return;
-
-    getMessages(activeConversationId);
-    subscribeToMessages(activeConversationId);
-
-    // cleanup
-    return () => unsubscribeFromMessages();
-  }, [getMessages, activeConversationId, subscribeToMessages, unsubscribeFromMessages]);
+      if (activeConversationId) {
+          getMessages(activeConversationId);
+      }
+  }, [getMessages, activeConversationId]);
+  useEffect(() => {
+      if (!socket) return;
+    
+      subscribeToMessages();
+    
+      return () => unsubscribeFromMessages();
+  }, [socket, subscribeToMessages, unsubscribeFromMessages]);
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden p-2 sm:p-3 md:p-8" style={frameStyle}>

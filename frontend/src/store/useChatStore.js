@@ -96,27 +96,32 @@ export const useChatStore = create(
       //     get().getConversations();
       //   });
       // },
-      subscribeToMessages: (userId) => {
-        if (!userId) return;
+      subscribeToMessages: () => {
         const socket = useAuthStore.getState().socket;
+            
         if (!socket) return;
+            
         socket.off("newMessage");
+            
         socket.on("newMessage", (newMessage) => {
-            console.log("🔥 NEW MESSAGE RECEIVED:", newMessage);
-            console.log("Sender:", newMessage.senderId);
-            console.log("Current chat user:", userId);
-        
-            if (String(newMessage.senderId) !== String(userId)) {
-                console.log("❌ Message ignored because sender doesn't match");
-                return;
+            console.log("NEW MESSAGE RECEIVED:", newMessage);
+          
+            const activeConversationId = get().activeConversationId;
+          
+            // If the message is from the person whose chat is currently open
+            if (
+                activeConversationId &&
+                String(newMessage.senderId) === String(activeConversationId)
+            ) {
+                set({
+                    messages: [...get().messages, newMessage]
+                });
+            } 
+            else {
+                // Message came from someone whose chat is not open
+                toast.success("New message received");
             }
-          
-            console.log("✅ ADDING MESSAGE TO UI");
-          
-            set({
-                messages: [...get().messages, newMessage],
-            });
-          
+            
             get().getConversations();
         });
       },
