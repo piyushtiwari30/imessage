@@ -80,20 +80,44 @@ export const useChatStore = create(
         }
       },
 
+      // subscribeToMessages: (userId) => {
+      //   if (!userId) return;
+
+      //   const socket = useAuthStore.getState().socket;
+      //   if (!socket) return;
+
+      //   socket.off("newMessage");
+      //   socket.on("newMessage", (newMessage) => {
+      //     // if im not the receiver don't do anything just return
+      //     if (String(newMessage.senderId) !== String(userId)) return;
+
+      //     set({ messages: [...get().messages, newMessage] });
+
+      //     get().getConversations();
+      //   });
+      // },
       subscribeToMessages: (userId) => {
         if (!userId) return;
-
         const socket = useAuthStore.getState().socket;
         if (!socket) return;
-
         socket.off("newMessage");
         socket.on("newMessage", (newMessage) => {
-          // if im not the receiver don't do anything just return
-          if (String(newMessage.senderId) !== String(userId)) return;
-
-          set({ messages: [...get().messages, newMessage] });
-
-          get().getConversations();
+            console.log("🔥 NEW MESSAGE RECEIVED:", newMessage);
+            console.log("Sender:", newMessage.senderId);
+            console.log("Current chat user:", userId);
+        
+            if (String(newMessage.senderId) !== String(userId)) {
+                console.log("❌ Message ignored because sender doesn't match");
+                return;
+            }
+          
+            console.log("✅ ADDING MESSAGE TO UI");
+          
+            set({
+                messages: [...get().messages, newMessage],
+            });
+          
+            get().getConversations();
         });
       },
 
