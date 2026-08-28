@@ -28,13 +28,26 @@ io.on("connection",(socket)=>{
 
     io.emit("getOnlineUsers",Object.keys(userSocketMap));
 
-    socket.on("disconnect",()=>{
-        console.log("USER DISCONNECTED:", userId);
+    // socket.on("disconnect",()=>{
+    //     console.log("USER DISCONNECTED:", userId);
 
-        if(userId) delete userSocketMap[userId];
+    //     if(userId) delete userSocketMap[userId];
 
-        io.emit("getOnlineUsers",Object.keys(userSocketMap));
-    })
+    //     io.emit("getOnlineUsers",Object.keys(userSocketMap));
+    // })
+    socket.on("disconnect", () => {
+     console.log("USER DISCONNECTED:", userId);
+        
+     // Only remove the user if this socket is still
+     // the socket currently stored for that user.
+     if (userId && userSocketMap[userId] === socket.id) {
+         delete userSocketMap[userId];
+     }
+    
+     console.log("USER SOCKET MAP AFTER DISCONNECT:", userSocketMap);
+    
+     io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    });
 })
 
 export {app, server,io,getReceiverSocketId}
