@@ -17,18 +17,22 @@ function getReceiverSocketId(userId){
 const userSocketMap={};
 
 io.on("connection",(socket)=>{
-    const userId= socket.handshake.query.userId;
+    const userId = socket.handshake.query.userId;
 
-    if(userId) userSocketMap[userId]= socket.id;
+    console.log("USER CONNECTED:", userId);
+    console.log("SOCKET ID:", socket.id);
 
+    if(userId) userSocketMap[userId] = socket.id;
 
-    //io.emit() send event to everyone -broadcast
+    console.log("USER SOCKET MAP:", userSocketMap);
+
     io.emit("getOnlineUsers",Object.keys(userSocketMap));
 
-
-    //socket.on is use to listen events
     socket.on("disconnect",()=>{
+        console.log("USER DISCONNECTED:", userId);
+
         if(userId) delete userSocketMap[userId];
+
         io.emit("getOnlineUsers",Object.keys(userSocketMap));
     })
 })

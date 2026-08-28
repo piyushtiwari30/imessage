@@ -99,10 +99,14 @@ export async function sendMessages(req,res) {
         await newMessage.save()
 
         const receiverSocketId = getReceiverSocketId(receiverId);
-        //only send the message in real time if user is online
+
+        console.log("receiverId:", receiverId);
+        console.log("receiverSocketId:", receiverSocketId);
+
         if(receiverSocketId){
-            io.to(receiverSocketId).emit("newMessage",newMessage)
-        }
+            console.log("EMITTING NEW MESSAGE");
+            io.to(receiverSocketId).emit("newMessage",newMessage);
+        }       
         res.status(201).json(newMessage)
     } catch (error) {
         console.log("Error in sendMessage:",error.message);
