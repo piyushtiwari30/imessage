@@ -78,14 +78,30 @@ export async function sendMessages(req,res) {
         let imageUrl;
         let videoUrl;
 
-        if(req.file){
-            if(!hasImageKitConfig()){
-                return res.status(500).json({message:"Media upload is not configured"});
+        if (req.file) {
+                
+            console.log("FILE RECEIVED:", {
+                originalname: req.file.originalname,
+                mimetype: req.file.mimetype,
+                size: req.file.size,
+                hasBuffer: !!req.file.buffer,
+            });
+        
+            if (!hasImageKitConfig()) {
+                return res.status(500).json({
+                    message: "Media upload is not configured"
+                });
             }
-
-            const url =await uploadChatMedia(req.file);
-            if(req.file.mimetype.startwith("video/")) videoUrl=url;
-            else imageUrl = url
+        
+            const url = await uploadChatMedia(req.file);
+        
+            console.log("IMAGEKIT URL:", url);
+        
+            if (req.file.mimetype.startsWith("video/")) {
+                videoUrl = url;
+            } else {
+                imageUrl = url;
+            }
         }
         
         const newMessage =new Message({
